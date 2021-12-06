@@ -11,8 +11,10 @@ pipeline {
         }
         stage('Test') {
             steps {
+              script {
                 def selection = input id: 'myChoice', message: 'please choose', parameters: [choice(name: 'test', choices: 'one\ntwo\nthree', description: 'which one')]
                 echo "Testing ${selection}"
+              }
             }
         }
         stage('Deploy') {
