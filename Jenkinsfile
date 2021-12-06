@@ -1,20 +1,46 @@
 pipeline {
-    agent any
-    parameters {
-        choice(
-            choices: ['greeting' , 'silence'],
-            description: '',
-            name: 'REQUESTED_ACTION')
-    }
-
+    agent none
     stages {
-        stage ('Speak') {
-            when {
-                // Only say hello if a "greeting" is requested
-                expression { params.REQUESTED_ACTION == 'greeting' }
+        stage('Non-Sequential Stage') {
+            agent {
+                label 'for-non-sequential'
             }
             steps {
-                echo "Hello, bitwiseman!"
+                echo "On Non-Sequential Stage"
+            }
+        }
+        stage('Sequential') {
+            agent {
+                label 'for-sequential'
+            }
+            environment {
+                FOR_SEQUENTIAL = "some-value"
+            }
+            stages {
+                stage('In Sequential 1') {
+                    steps {
+                        echo "In Sequential 1"
+                    }
+                }
+                stage('In Sequential 2') {
+                    steps {
+                        echo "In Sequential 2"
+                    }
+                }
+                stage('Parallel In Sequential') {
+                    parallel {
+                        stage('In Parallel 1') {
+                            steps {
+                                echo "In Parallel 1"
+                            }
+                        }
+                        stage('In Parallel 2') {
+                            steps {
+                                echo "In Parallel 2"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
