@@ -11,8 +11,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                input "Do you want to run tests?"
-                echo 'Testing'
+                def selection = input id: 'myChoice', message: 'please choose', parameters: [choice(name: 'test', choices: 'one\ntwo\nthree', description: 'which one')]
+                echo "Testing ${selection}"
             }
         }
         stage('Deploy') {
