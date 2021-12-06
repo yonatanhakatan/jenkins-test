@@ -1,25 +1,20 @@
 pipeline {
     agent any
-    options {
-        skipStagesAfterUnstable()
+    parameters {
+        choice(
+            choices: ['greeting' , 'silence'],
+            description: '',
+            name: 'REQUESTED_ACTION')
     }
+
     stages {
-        stage('Build') {
-            steps {
-                echo 'Building'
+        stage ('Speak') {
+            when {
+                // Only say hello if a "greeting" is requested
+                expression { params.REQUESTED_ACTION == 'greeting' }
             }
-        }
-        stage('Test') {
             steps {
-              script {
-                def selection = input id: 'myChoice', message: 'please choose', parameters: [choice(name: 'test', choices: 'one\ntwo\nthree', description: 'which one')]
-                echo "Testing ${selection}"
-              }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying'
+                echo "Hello, bitwiseman!"
             }
         }
     }
